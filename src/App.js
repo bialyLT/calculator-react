@@ -3,43 +3,81 @@ import { useState } from 'react';
 
 function App() {
 
-  const [valueDisplay, setvalueDisplay] = useState(0);
+  const [valueDisplay, setValueDisplay] = useState(0);
+  const [valueResultado, setValueResultado] = useState(0);
   const [valueCurrent, setValueCurrent] = useState(0);
-  const [operator, setoperator] = useState("");
+  const [operator, setOperator] = useState("");
+  const [prevOperator, setPrevOperator] = useState("");
 
 
   function handleClear() {
     setValueCurrent(0);
-    setvalueDisplay(0);
+    setValueDisplay(0);
+    setValueResultado(0);
   }
 
   function handleNumbers(e) {
     if (valueDisplay === 0 || isNaN(valueDisplay)) {
-      setvalueDisplay((e.target.value));
+      setValueDisplay((e.target.value));
     } else {
-      setvalueDisplay(`${valueDisplay}${e.target.value}`);
+      setValueDisplay(`${valueDisplay}${e.target.value}`);
     }
   }
 
   function operation(e) {
+    console.log(valueDisplay);
+    console.log(valueCurrent);
+    setOperator(e.target.id);
+    setPrevOperator(setOperator(prev => {return prev}))
+    switch (prevOperator) {
+    case "add":
+      setValueResultado(setValueCurrent(prevState => {return prevState+valueCurrent}));
+      break;
+    case "subtract":
+      setValueResultado(setValueCurrent(prevState => {return prevState-valueCurrent}));
+      break;
+    case "multiply":
+      setValueResultado(setValueCurrent(prevState => {return prevState*valueCurrent}));
+      break;
+    case "divide":
+      setValueResultado(setValueCurrent(prevState => {return prevState/valueCurrent}));
+      break;
+    default:
+      break;
+    }
     setValueCurrent(valueDisplay);
-    setoperator(e.target.id);
-    setvalueDisplay("");
+    setValueDisplay(0);
   }
 
+
   function equal() {
+    let resultado;
     switch (operator) {
       case "add":
-        setvalueDisplay(parseFloat(valueCurrent)+parseFloat(valueDisplay));
+        resultado = (parseFloat(valueCurrent) + parseFloat(valueDisplay));
+        setValueResultado(resultado);
+        setValueDisplay(0);
+
+        setOperator("");
+        setPrevOperator(setOperator(prev => {return prev}))
         break;
       case "subtract":
-        setvalueDisplay(parseFloat(valueCurrent)-parseFloat(valueDisplay));
+        resultado = (parseFloat(valueCurrent)-parseFloat(valueDisplay));
+        setValueResultado(resultado);
+        setValueDisplay(0);
+        setOperator("");
         break;
       case "multiply":
-        setvalueDisplay(parseFloat(valueCurrent)*parseFloat(valueDisplay));
+        resultado = (parseFloat(valueCurrent)*parseFloat(valueDisplay));
+        setValueResultado(resultado);
+        setValueDisplay(0);
+        setOperator("");
         break;
       case "divide":
-        setvalueDisplay(parseFloat(valueCurrent)/parseFloat(valueDisplay));
+        resultado = (parseFloat(valueCurrent)/parseFloat(valueDisplay));
+        setValueResultado(resultado);
+        setValueDisplay(0);
+        setOperator("");
         break;
       default:
         break;
@@ -48,7 +86,9 @@ function App() {
 
   return (
     <div className="container row">
-      <input type="text" className="calculator-screen z-depth-1" value={valueDisplay} disabled id='display'/>
+      <label htmlFor="display">{valueResultado}
+        <input type="text" className="calculator-screen z-depth-1" value={valueDisplay} disabled id='display'/>
+      </label>
       <div className="calculator-keys">
           <button type="button" className="operator btn btn-info" value="+" id='add' onClick={operation}>+</button>
           <button type="button" className="operator btn btn-info" value="-" id='subtract' onClick={operation}>-</button>
